@@ -14,10 +14,6 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private ArrayList<Display> mDisplayList;
-    private RecyclerView.Adapter mDisplayAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
     private RecyclerView display_recycler;
 
     @Override
@@ -26,13 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         findViews();
-
-        Display[] displays;
-
-        DisplayManager mDisplayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
-        displays = mDisplayManager.getDisplays();
-
-        mDisplayList = new ArrayList<>(Arrays.asList(displays));
 
         setupDisplayRecycler();
     }
@@ -43,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDisplayRecycler() {
         display_recycler.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        display_recycler.setLayoutManager(mLayoutManager);
+        display_recycler.setLayoutManager(new LinearLayoutManager(this));
+        display_recycler.setAdapter(new DisplayAdapter(getDisplayList()));
+    }
 
-        mDisplayAdapter = new DisplayAdapter(mDisplayList);
-        display_recycler.setAdapter(mDisplayAdapter);
+    private ArrayList<Display> getDisplayList() {
+        DisplayManager mDisplayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+        Display[] displays = mDisplayManager.getDisplays();
+        return new ArrayList<>(Arrays.asList(displays));
     }
 }
